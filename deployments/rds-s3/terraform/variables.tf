@@ -1,17 +1,25 @@
-# tflint-ignore: terraform_unused_declarations
-variable "cluster_name" {
-  description = "Name of cluster"
+variable "env_name" {
+  description = "Env name (sandbox, dev, prod, ...)"
   type        = string
+  default     = "sandbox"
+}
 
-  validation {
-    condition     = length(var.cluster_name) > 0 && length(var.cluster_name) <= 19
-    error_message = "The cluster name must be between [1, 19] characters"
-  }
+variable "remote_state_bucket" {
+  description = "Shared backend bucket"
+  type        = string
+  default     = "tawkify-kubeflow-tfstate-sandbox"
+}
+
+variable "remote_state_key" {
+  description = "Shared backend key"
+  type        = string
+  default     = "global/s3/terraform.tfstate"
 }
 
 variable "cluster_region" {
   description = "Region to create the cluster"
   type        = string
+  default     = "us-west-2"
 }
 
 variable "eks_version" {
@@ -169,7 +177,7 @@ variable "secret_recovery_window_in_days" {
 variable "generate_db_password" {
   description = "Generates a random admin password for the RDS database. Is overriden by db_password"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "force_destroy_s3_bucket" {
