@@ -19,7 +19,7 @@ locals {
     desired_size    = 5
     max_size        = 10
     disk_size       = var.node_disk_size_cpu
-    subnet_ids      = "data.terraform_remote_state.infra.outputs.infra_vpc.private_subnets"
+    subnet_ids      = data.terraform_remote_state.infra.outputs.infra_vpc.private_subnets
   }
 
   managed_node_group_gpu = local.using_gpu ? {
@@ -30,7 +30,7 @@ locals {
     max_size        = 5
     ami_type        = "AL2_x86_64_GPU"
     disk_size       = var.node_disk_size_gpu
-    subnet_ids      = "data.terraform_remote_state.infra.outputs.infra_vpc.private_subnets"
+    subnet_ids      = data.terraform_remote_state.infra.outputs.infra_vpc.private_subnets
   } : null
 
 
@@ -92,8 +92,8 @@ module "eks_blueprints" {
   cluster_name    = local.cluster_name
   cluster_version = local.eks_version
 
-  vpc_id                          = "data.terraform_remote_state.infra.outputs.infra_vpc.vpc_id"
-  private_subnet_ids              = "data.terraform_remote_state.infra.outputs.infra_vpc.private_subnets"
+  vpc_id                          = data.terraform_remote_state.infra.outputs.infra_vpc.vpc_id
+  private_subnet_ids              = data.terraform_remote_state.infra.outputs.infra_vpc.private_subnets
   cluster_endpoint_private_access = true
 
   # configuration settings: https://github.com/aws-ia/terraform-aws-eks-blueprints/blob/main/modules/aws-eks-managed-node-groups/locals.tf
@@ -226,8 +226,8 @@ module "kubeflow_components" {
   use_s3                        = var.use_s3
   pipeline_s3_credential_option = var.pipeline_s3_credential_option
 
-  vpc_id                         = "data.terraform_remote_state.infra.outputs.infra_vpc.vpc_id"
-  subnet_ids                     = var.publicly_accessible ? "data.terraform_remote_state.infra.outputs.infra_vpc.public_subnets" : "data.terraform_remote_state.infra.outputs.infra_vpc.private_subnets"
+  vpc_id                         = data.terraform_remote_state.infra.outputs.infra_vpc.vpc_id
+  subnet_ids                     = var.publicly_accessible ? data.terraform_remote_state.infra.outputs.infra_vpc.public_subnets : data.terraform_remote_state.infra.outputs.infra_vpc.private_subnets
   security_group_id              = module.eks_blueprints.cluster_primary_security_group_id
   db_name                        = var.db_name
   db_username                    = var.db_username
