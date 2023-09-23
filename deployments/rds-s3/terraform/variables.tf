@@ -4,6 +4,12 @@ variable "env_name" {
   default     = "sandbox"
 }
 
+variable "role_arn" {
+  description = "IAM Role"
+  type        = string
+  default     = "arn:aws:iam::352587061287:role/Tawkify-dataeng-admin"
+}
+
 variable "remote_state_bucket" {
   description = "Shared backend bucket"
   type        = string

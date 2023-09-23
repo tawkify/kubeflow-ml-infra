@@ -30,7 +30,7 @@ output "eks_managed_nodegroup_status" {
 
 output "configure_kubectl" {
   description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
-  value       = module.eks_blueprints.configure_kubectl
+  value       = "${module.eks_blueprints.configure_kubectl} --role-arn ${var.role_arn}"
 }
 
 output "region" {
@@ -39,11 +39,18 @@ output "region" {
 }
 
 output "rds_endpoint" {
-  value       = try(module.kubeflow_components.rds_endpoint, null)
+  value       = module.kubeflow_components.rds_endpoint
   description = "The address of the RDS endpoint"
 }
 
 output "s3_bucket_name" {
-  value       = try(module.kubeflow_components.s3_bucket_name, null)
+  value       = module.kubeflow_components.s3_bucket_name
   description = "The name of the created S3 bucket"
+}
+
+output "kf_profile_role_arns" {
+  value = {
+    for profile in local.profiles: profile => aws_iam_role.kf_oidc_assume_role[profile].arn
+  }
+  description = "IAM Roles for Kubeflow profiles"
 }
