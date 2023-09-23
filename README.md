@@ -9,6 +9,7 @@ cd ./deployments/rds-s3/terraform/
 make setup
 ```
 3. Fetch and run the kubectl config command line.
+Make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig.
 ```
 make config-eks
 ```
