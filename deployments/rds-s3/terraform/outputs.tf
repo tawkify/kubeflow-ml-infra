@@ -39,11 +39,18 @@ output "region" {
 }
 
 output "rds_endpoint" {
-  value       = try(module.kubeflow_components.rds_endpoint, null)
+  value       = module.kubeflow_components.rds_endpoint
   description = "The address of the RDS endpoint"
 }
 
 output "s3_bucket_name" {
-  value       = try(module.kubeflow_components.s3_bucket_name, null)
+  value       = module.kubeflow_components.s3_bucket_name
   description = "The name of the created S3 bucket"
+}
+
+output "kf_profile_role_arns" {
+  value = {
+    for profile in local.profiles: profile => aws_iam_role.kf_oidc_assume_role[profile].arn
+  }
+  description = "IAM Roles for Kubeflow profiles"
 }

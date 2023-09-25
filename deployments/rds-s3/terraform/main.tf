@@ -47,7 +47,7 @@ provider "aws" {
   profile             = "default"
   region              = "us-west-2"
   assume_role {
-    role_arn = "arn:aws:iam::352587061287:role/Tawkify-dataeng-admin"
+    role_arn = var.role_arn
   }
   default_tags {
     tags = {
@@ -65,7 +65,7 @@ provider "kubernetes" {
     api_version = "client.authentication.k8s.io/v1beta1"
     command     = "aws"
     # This requires the awscli to be installed locally where Terraform is executed
-    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id, "--role-arn", "arn:aws:iam::352587061287:role/Tawkify-dataeng-admin"]
+    args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id, "--role-arn", var.role_arn]
   }
 }
 
@@ -78,7 +78,7 @@ provider "helm" {
       api_version = "client.authentication.k8s.io/v1beta1"
       command     = "aws"
       # This requires the awscli to be installed locally where Terraform is executed
-      args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id, "--role-arn", "arn:aws:iam::352587061287:role/Tawkify-dataeng-admin"]
+      args = ["eks", "get-token", "--cluster-name", module.eks_blueprints.eks_cluster_id, "--role-arn", var.role_arn]
     }
   }
 }
@@ -259,6 +259,6 @@ data "terraform_remote_state" "infra" {
     bucket   = var.remote_state_bucket
     key      = var.remote_state_key
     region   = var.cluster_region
-    role_arn = "arn:aws:iam::352587061287:role/Tawkify-dataeng-admin"
+    role_arn = var.role_arn
   }
 }
