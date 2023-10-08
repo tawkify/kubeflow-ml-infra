@@ -36,6 +36,10 @@ create-profile:
 	rm profile_iam.yaml
 	kubectl rollout restart deployment dex -n auth
 
+namespace-access-pipelines:
+	kubectl apply -f kfp_sa_token.yaml
+	rm kfp_sa_token.yaml
+
 deploy: init \
  create-eks-cluster \
  deploy-eks-blueprints-k8s-addons \

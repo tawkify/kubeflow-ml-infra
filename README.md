@@ -31,6 +31,7 @@ This section follows https://awslabs.github.io/kubeflow-manifests/docs/deploymen
 cd ./deployments/rds-s3/terraform/
 ```
 2. Create an IAM role
+
 In [profiles.tf](./deployments/rds-s3/terraform/profiles.tf), add your profile name in the `profiles` local variable and export it for later.
 ```
 export PROFILE_NAMESPACE=your-namespace
@@ -88,3 +89,32 @@ EOF
 
 make create-profile
 ```
+5. Enable the Kubeflow Notebook to access Pipelines in your namespace.
+```
+cat <<EOF > kfp_sa_token.yaml
+apiVersion: kubeflow.org/v1alpha1
+kind: PodDefault
+metadata:
+  name: access-ml-pipeline
+  namespace: ${PROFILE_NAMESPACE}
+spec:
+  desc: Allow access to Kubeflow Pipelines
+  selector:
+    matchLabels:
+      access-ml-pipeline: "true"
+  volumes:
+    - name: volume-kf-pipeline-token
+      projected:
+        sources:
+          - serviceAccountToken:
+              path: token
+              expirationSeconds: 7200
+              audience: pipelines.kubeflow.org      
+  volumeMounts:
+    - mountPath: /var/run/secrets/kubeflow/pipelines
+      name: volume-kf-pipeline-token
+      readOnly: true
+
+make namespace-access-pipelines
+```
+6. Push and merge this branch to save the configs in our infra repo.
