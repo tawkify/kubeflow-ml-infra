@@ -68,15 +68,33 @@ resource "aws_iam_role_policy_attachment" "kf_s3_access" {
 
 data "aws_iam_policy_document" "kf_redshift_data_policy" {
   statement {
+    sid    = "DataAPIPermissions"
     effect = "Allow"
-    actions   = ["redshift-data:ExecuteStatement"]
-    resources = [data.terraform_remote_state.infra.outputs.redshift_cluster_arn]
+    actions = [
+      "redshift-data:BatchExecuteStatement",
+      "redshift-data:ExecuteStatement",
+      "redshift-data:CancelStatement",
+      "redshift-data:ListStatements",
+      "redshift-data:GetStatementResult",
+      "redshift-data:DescribeStatement",
+      "redshift-data:ListDatabases",
+      "redshift-data:ListSchemas",
+      "redshift-data:ListTables",
+      "redshift-data:DescribeTable"
+    ]
+    resources = ["*"]
+  }
+  statement {
+    sid       = "SecretsManagerPermissions"
+    effect    = "Allow"
+    actions   = ["secretsmanager:GetSecretValue"]
+    resources = [data.terraform_remote_state.infra.outputs.kubeflow_redshift_user_secret]
   }
 }
 
 resource "aws_iam_policy" "kf_redshift_data_policy" {
-  name        = "KubeflowRedshiftDataPolicy${title(var.env_name)}"
-  policy      = data.aws_iam_policy_document.kf_redshift_data_policy.json
+  name   = "KubeflowRedshiftDataPolicy${title(var.env_name)}"
+  policy = data.aws_iam_policy_document.kf_redshift_data_policy.json
 }
 
 resource "aws_iam_role_policy_attachment" "kf_redshift_data" {

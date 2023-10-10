@@ -48,9 +48,14 @@ output "s3_bucket_name" {
   description = "The name of the created S3 bucket"
 }
 
+output "s3_bucket_arn" {
+  value       = module.kubeflow_components.s3_bucket_arn
+  description = "The arn of the created S3 bucket"
+}
+
 output "kf_profile_role_arns" {
   value = {
-    for profile in local.profiles: profile => aws_iam_role.kf_oidc_assume_role[profile].arn
+    for profile in local.profiles : profile => aws_iam_role.kf_oidc_assume_role[profile].arn
   }
   description = "IAM Roles for Kubeflow profiles"
 }

@@ -8,6 +8,11 @@ output "s3_bucket_name" {
   description = "The name of the created S3 bucket"
 }
 
+output "s3_bucket_arn" {
+  value       = try(module.s3[0].s3_bucket_arn, null)
+  description = "The arn of the created S3 bucket"
+}
+
 output "irsa_kubeflow_pipeline_role_name" {
   value       = try(module.kubeflow_pipeline_irsa[0].irsa_iam_role_name, null)
   description = " The irsa role name for KFP"
