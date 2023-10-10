@@ -65,3 +65,22 @@ resource "aws_iam_role_policy_attachment" "kf_s3_access" {
   policy_arn = aws_iam_policy.kf_s3_access_policy.arn
   role       = aws_iam_role.kf_oidc_assume_role[each.key].id
 }
+
+data "aws_iam_policy_document" "kf_redshift_data_policy" {
+  statement {
+    effect = "Allow"
+    actions   = ["redshift-data:ExecuteStatement"]
+    resources = [data.terraform_remote_state.infra.outputs.redshift_cluster_arn]
+  }
+}
+
+resource "aws_iam_policy" "kf_redshift_data_policy" {
+  name        = "KubeflowRedshiftDataPolicy${title(var.env_name)}"
+  policy      = data.aws_iam_policy_document.kf_redshift_data_policy.json
+}
+
+resource "aws_iam_role_policy_attachment" "kf_redshift_data" {
+  for_each   = toset(local.profiles)
+  policy_arn = aws_iam_policy.kf_redshift_data_policy.arn
+  role       = aws_iam_role.kf_oidc_assume_role[each.key].id
+}
