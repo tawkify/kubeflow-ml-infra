@@ -3,17 +3,26 @@
 ## Getting Started
 
 1. Install aws cli and configure.
-2. Navigate to [rds-s3 deployment with terraform](./deployments/rds-s3/terraform/) for the infra code. 
+2. Navigate to [rds-s3 deployment with terraform](./deployments/rds-s3/terraform/) for the infra setup. 
 ```
 cd ./deployments/rds-s3/terraform/
 make setup
 ```
 3. Fetch and run the kubectl config command line.
-Make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig.
+
+Make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig (e.g. an env var `AWS_PROFILE`). 
 ```
 make config-eks
 ```
-
+## Terraforming
+In the terraform folder, use make commands to apply the correct var files.
+```
+cd ./deployments/rds-s3/terraform/
+make init
+make plan
+make apply
+```
+For a complete list of make commands defined, refer to this [Makefile](./deployments/rds-s3/terraform/Makefile)
 ## Connect to Kubeflow UI
 1. Navigate to [rds-s3 deployment with terraform](./deployments/rds-s3/terraform/) for the infra code.
 ```
