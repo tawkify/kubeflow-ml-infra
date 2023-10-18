@@ -13,7 +13,7 @@ variable "role_arn" {
 variable "remote_state_bucket" {
   description = "Shared backend bucket"
   type        = string
-  default     = "tawkify-kubeflow-tfstate-sandbox"
+  default     = "tawkify-tfstate-sandbox"
 }
 
 variable "remote_state_key" {
