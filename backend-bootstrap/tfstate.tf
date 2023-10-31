@@ -23,6 +23,18 @@ resource "aws_s3_bucket" "tawkify_kubeflow_tfstate_bucket" {
 }
 
 # Note: ACLs are now by deafult disabled, and cannot be created unless the ownership settings are changed. See https://docs.aws.amazon.com/AmazonS3/latest/userguide/about-object-ownership.html
+resource "aws_s3_bucket_acl" "tawkify_kubeflow_tfstate_bucket_acl" {
+  bucket = aws_s3_bucket.tawkify_kubeflow_tfstate_bucket.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_ownership_controls" "tawkify_kubeflow_tfstate_bucket_ownership" {
+  bucket = aws_s3_bucket.tawkify_kubeflow_tfstate_bucket.id
+  rule {
+    object_ownership = "ObjectWriter"
+  }
+}
+
 resource "aws_s3_bucket_public_access_block" "tawkify_kubeflow_tfstate_bucket_pab" {
   bucket = aws_s3_bucket.tawkify_kubeflow_tfstate_bucket.id
 
