@@ -106,7 +106,7 @@ variable "db_password" {
 variable "db_class" {
   type        = string
   description = "Database instance type"
-  default     = "db.m5.large"
+  default     = "db.m6g.large"
 }
 
 variable "db_allocated_storage" {
